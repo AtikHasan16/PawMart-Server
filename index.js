@@ -69,7 +69,8 @@ async function run() {
     });
     // // Function for getting order data
     app.get("/orderData/:myEmail", async (req, res) => {
-      const query = req.params.myEmail;
+      const userEmail = req.params.myEmail;
+      const query = { buyerEmail: userEmail };
       const result = await orderCollection.find(query).toArray();
       res.send(result);
     });
