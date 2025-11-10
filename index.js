@@ -81,7 +81,6 @@ async function run() {
     });
 
     // Function for getting recent Items
-
     app.get("/recent-listings", async (req, res) => {
       const result = await productsCollection
         .find()
