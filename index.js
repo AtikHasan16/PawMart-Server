@@ -21,8 +21,14 @@ async function run() {
     const productsCollection = database.collection("listings");
     const orderCollection = database.collection("orders");
 
-    // Function for getting all products
+    // Function for posting product
+    app.post("/all-products", async (req, res) => {
+      const listingData = req.body;
+      const result = await productsCollection.insertOne(listingData);
+      res.send(result);
+    });
 
+    // Function for getting all products
     app.get("/all-products", async (req, res) => {
       const result = await productsCollection.find().toArray();
       res.send(result);
