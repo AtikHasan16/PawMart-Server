@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
     const database = client.db("pawmart_db");
     const productsCollection = database.collection("listings");
     const orderCollection = database.collection("orders");
@@ -47,6 +47,32 @@ async function run() {
       const result = await productsCollection.findOne(query);
       res.send(result);
     });
+    // // Function for getting order data
+    app.get("/all-products/user/:myEmail", async (req, res) => {
+      const userEmail = req.params.myEmail;
+      const query = { email: userEmail };
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // Function for delete listing data by id
+    app.delete("/all-products/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await productsCollection.deleteOne(filter);
+      res.send(result);
+      console.log(result);
+    });
+
+    // Function for update listing data
+    app.put("/all-products/:id", async (req, res) => {
+      const updatedData = req.body;
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const update = { $set: updatedData };
+      const result = await productsCollection.updateOne(query, update);
+      res.send(result);
+    });
 
     // Function for getting recent Items
 
@@ -75,16 +101,27 @@ async function run() {
       res.send(result);
     });
 
-    // Function for delete order data by id
-    app.delete("/orderData/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await orderCollection.deleteOne(filter);
-      res.send(result);
-      console.log(result);
-    });
+    // // Function for delete order data by id
+    // app.delete("/orderData/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const result = await orderCollection.deleteOne(filter);
+    //   res.send(result);
+    //   console.log(result);
+    // });
 
-    await client.db("admin").command({ ping: 1 });
+    // // Function for update order data
+    // app.put("/orderData/:id", async (req, res) => {
+    //   const updatedData = req.body;
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const update = { $set: updatedData };
+    //   const result = await orderCollection.updateOne(query, update);
+    //   res.send(result);
+    // });
+
+    // await client.db("admin").command({ ping: 1 });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
