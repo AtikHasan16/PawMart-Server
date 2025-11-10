@@ -2,22 +2,76 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const { default: client } = require("./mongoClient");
+const { ObjectId } = require("mongodb");
 const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+// Operation for test
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
+
 async function run() {
   try {
     await client.connect();
+    const database = client.db("pawmart_db");
+    const productsCollection = database.collection("listings");
+    const orderCollection = database.collection("orders");
 
-    app.get("/", (req, res) => {
-      res.send("Server is running!");
+    // Function for getting all products
+
+    app.get("/all-products", async (req, res) => {
+      const result = await productsCollection.find().toArray();
+      res.send(result);
     });
 
-    app.listen(port, () => {
-      console.log(`Running or ${port}`);
+    // Function for getting data category-wise
+    app.get("/all-products/category/:categoryName", async (req, res) => {
+      const categories = req.params.categoryName;
+      console.log(categories);
+
+      const query = { category: categories };
+      const result = await productsCollection.find(query).toArray();
+
+      res.send(result);
+    });
+
+    // Function for finding data with Id
+    app.get("/all-products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      console.log(query);
+      const result = await productsCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Function for getting recent Items
+
+    app.get("/recent-listings", async (req, res) => {
+      const result = await productsCollection
+        .find()
+        .sort({ date: -1 })
+        .limit(6)
+        .toArray();
+
+      res.send(result);
+    });
+
+    // Function for posting order data
+
+    app.post("/orderData", async (req, res) => {
+      const orderData = req.body;
+      const result = await orderCollection.insertOne(orderData);
+      res.send(result);
+    });
+    // // Function for getting order data
+    app.get("/orderData/:myEmail", async (req, res) => {
+      const query = req.params.myEmail;
+      const result = await orderCollection.find(query).toArray();
+      res.send(result);
     });
 
     await client.db("admin").command({ ping: 1 });
@@ -28,3 +82,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
+// Function for server log
+app.listen(port, () => {
+  console.log(`Running or ${port}`);
+});
