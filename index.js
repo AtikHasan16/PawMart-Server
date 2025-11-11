@@ -34,6 +34,14 @@ async function run() {
       res.send(result);
     });
 
+    // Function for get data by name search
+    app.get("/search", async (req, res) => {
+      const searchText = req.query.search;
+      const query = { name: { $regex: searchText, $options: "i" } };
+      const result = await productsCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Function for getting data category-wise
     app.get("/all-products/category/:categoryName", async (req, res) => {
       const categories = req.params.categoryName;
