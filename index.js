@@ -45,7 +45,7 @@ async function run() {
     // Function for getting data category-wise
     app.get("/all-products/category/:categoryName", async (req, res) => {
       const categories = req.params.categoryName;
-      console.log(categories);
+      // console.log(categories);
 
       const query = { category: categories };
       const result = await productsCollection.find(query).toArray();
@@ -57,7 +57,7 @@ async function run() {
     app.get("/all-products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      console.log(query);
+      // console.log(query);
       const result = await productsCollection.findOne(query);
       res.send(result);
     });
@@ -75,7 +75,7 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const result = await productsCollection.deleteOne(filter);
       res.send(result);
-      console.log(result);
+      // console.log(result);
     });
 
     // Function for update listing data
@@ -135,9 +135,7 @@ async function run() {
 
     // await client.db("admin").command({ ping: 1 });
 
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    console.log(" You successfully connected to MongoDB!");
   } finally {
   }
 }
