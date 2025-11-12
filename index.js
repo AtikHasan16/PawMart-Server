@@ -114,14 +114,15 @@ async function run() {
       res.send(result);
     });
 
-    // // Function for delete order data by id
-    // app.delete("/orderData/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const result = await orderCollection.deleteOne(filter);
-    //   res.send(result);
-    //   console.log(result);
-    // });
+    // Function for delete order data by id
+    app.delete("/orderData/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const result = await orderCollection.deleteOne(filter);
+      res.send(result);
+      // console.log(result);
+    });
 
     // // Function for update order data
     // app.put("/orderData/:id", async (req, res) => {
